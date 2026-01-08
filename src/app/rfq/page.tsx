@@ -43,7 +43,9 @@ export default function RFQPage() {
         <p className="text-gray-400 mb-8">
           Connect your wallet to submit custom option requests.
         </p>
-        <ConnectButton />
+        <div className="flex justify-center">
+          <ConnectButton />
+        </div>
       </div>
     );
   }

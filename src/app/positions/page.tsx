@@ -14,7 +14,9 @@ export default function PositionsPage() {
         <p className="text-gray-400 mb-8">
           Connect your wallet to view your positions.
         </p>
-        <ConnectButton />
+        <div className="flex justify-center">
+          <ConnectButton />
+        </div>
       </div>
     );
   }

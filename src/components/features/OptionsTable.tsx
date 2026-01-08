@@ -9,10 +9,15 @@ import type { FormattedOrder } from "@/types";
 
 interface OptionsTableProps {
   onSelectOrder?: (order: FormattedOrder) => void;
+  filterAsset?: string;
 }
 
-export function OptionsTable({ onSelectOrder }: OptionsTableProps) {
+export function OptionsTable({ onSelectOrder, filterAsset }: OptionsTableProps) {
   const { orders, marketData, isLoading, error, refetch } = useOrders();
+
+  const filteredOrders = filterAsset
+    ? orders.filter((o) => o.asset === filterAsset)
+    : orders;
 
   if (isLoading) {
     return (
@@ -41,20 +46,22 @@ export function OptionsTable({ onSelectOrder }: OptionsTableProps) {
     );
   }
 
-  if (orders.length === 0) {
+  if (filteredOrders.length === 0) {
     return (
       <Card>
         <CardContent>
           <div className="text-center py-12 text-gray-400">
-            No orders available
+            {filterAsset
+              ? `No ${filterAsset} orders available`
+              : "No orders available"}
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  const puts = orders.filter((o) => o.type === "put");
-  const calls = orders.filter((o) => o.type === "call");
+  const puts = filteredOrders.filter((o) => o.type === "put");
+  const calls = filteredOrders.filter((o) => o.type === "call");
 
   return (
     <div className="space-y-6">
