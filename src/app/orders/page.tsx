@@ -4,11 +4,17 @@ import { useState } from "react";
 import { OptionsTable } from "@/components/features/OptionsTable";
 import { AssetChart } from "@/components/features/AssetChart";
 import { OrderFillModal } from "@/components/features/OrderFillModal";
+import { AlertModal } from "@/components/features/AlertModal";
+import { usePrices } from "@/hooks/usePrices";
 import type { FormattedOrder } from "@/types";
 
 export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<FormattedOrder | null>(null);
   const [selectedAsset, setSelectedAsset] = useState("ETH");
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const { eth, btc } = usePrices();
+
+  const currentPrice = selectedAsset === "ETH" ? eth : selectedAsset === "BTC" ? btc : eth;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -19,7 +25,10 @@ export default function OrdersPage() {
         </p>
       </div>
 
-      <AssetChart onAssetSelect={setSelectedAsset} />
+      <AssetChart 
+        onAssetSelect={setSelectedAsset} 
+        onAlertClick={() => setShowAlertModal(true)}
+      />
 
       <OptionsTable onSelectOrder={setSelectedOrder} filterAsset={selectedAsset} />
 
@@ -30,6 +39,13 @@ export default function OrdersPage() {
           onSuccess={() => setSelectedOrder(null)}
         />
       )}
+
+      <AlertModal
+        isOpen={showAlertModal}
+        onClose={() => setShowAlertModal(false)}
+        asset={selectedAsset}
+        currentPrice={currentPrice}
+      />
     </div>
   );
 }
