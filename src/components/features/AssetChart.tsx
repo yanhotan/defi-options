@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { createChart, ColorType, IChartApi, ISeriesApi, CandlestickData } from "lightweight-charts";
+import { createChart, ColorType, IChartApi, ISeriesApi, CandlestickData, LineData } from "lightweight-charts";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 
@@ -38,18 +38,20 @@ interface ChartCandle {
 
 interface AssetChartProps {
   onAssetSelect?: (symbol: string) => void;
+  onAlertClick?: () => void;
 }
 
-export function AssetChart({ onAssetSelect }: AssetChartProps) {
+export function AssetChart({ onAssetSelect, onAlertClick }: AssetChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
+  const seriesRef = useRef<ISeriesApi<"Candlestick"> | ISeriesApi<"Line"> | null>(null);
   const [selectedAsset, setSelectedAsset] = useState("ETH");
   const [selectedTimeframe, setSelectedTimeframe] = useState("7");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [priceChange, setPriceChange] = useState<number | null>(null);
+  const [chartType, setChartType] = useState<"candle" | "line">("candle");
 
   const filteredAssets = ASSETS.filter(
     (a) =>
@@ -66,17 +68,26 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
       const data = await response.json();
 
       if (data.candles && data.candles.length > 0 && seriesRef.current) {
-        const formattedData: CandlestickData[] = data.candles.map(
-          (c: ChartCandle) => ({
-            time: c.time,
-            open: c.open,
-            high: c.high,
-            low: c.low,
-            close: c.close,
-          })
-        );
-
-        seriesRef.current.setData(formattedData);
+        if (chartType === "candle") {
+          const formattedData: CandlestickData[] = data.candles.map(
+            (c: ChartCandle) => ({
+              time: c.time,
+              open: c.open,
+              high: c.high,
+              low: c.low,
+              close: c.close,
+            })
+          );
+          (seriesRef.current as ISeriesApi<"Candlestick">).setData(formattedData);
+        } else {
+          const formattedData: LineData[] = data.candles.map(
+            (c: ChartCandle) => ({
+              time: c.time,
+              value: c.close,
+            })
+          );
+          (seriesRef.current as ISeriesApi<"Line">).setData(formattedData);
+        }
         chartRef.current?.timeScale().fitContent();
 
         const lastCandle = data.candles[data.candles.length - 1];
@@ -93,7 +104,7 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedAsset, selectedTimeframe]);
+  }, [selectedAsset, selectedTimeframe, chartType]);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -133,16 +144,23 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
 
     chartRef.current = chart;
 
-    const candlestickSeries = chart.addCandlestickSeries({
-      upColor: "#22C55E",
-      downColor: "#EF4444",
-      borderUpColor: "#22C55E",
-      borderDownColor: "#EF4444",
-      wickUpColor: "#22C55E",
-      wickDownColor: "#EF4444",
-    });
-
-    seriesRef.current = candlestickSeries;
+    if (chartType === "candle") {
+      const candlestickSeries = chart.addCandlestickSeries({
+        upColor: "#22C55E",
+        downColor: "#EF4444",
+        borderUpColor: "#22C55E",
+        borderDownColor: "#EF4444",
+        wickUpColor: "#22C55E",
+        wickDownColor: "#EF4444",
+      });
+      seriesRef.current = candlestickSeries;
+    } else {
+      const lineSeries = chart.addLineSeries({
+        color: "#4ADE80",
+        lineWidth: 2,
+      });
+      seriesRef.current = lineSeries;
+    }
 
     const handleResize = () => {
       if (chartContainerRef.current) {
@@ -156,7 +174,7 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
       window.removeEventListener("resize", handleResize);
       chart.remove();
     };
-  }, []);
+  }, [chartType]);
 
   useEffect(() => {
     if (seriesRef.current) {
@@ -242,6 +260,25 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
               )}
 
               <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+                <button
+                  className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                    chartType === "candle" ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => setChartType("candle")}
+                >
+                  Candle
+                </button>
+                <button
+                  className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                    chartType === "line" ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => setChartType("line")}
+                >
+                  Line
+                </button>
+              </div>
+
+              <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
                 {TIMEFRAMES.map((tf) => (
                   <button
                     key={tf.days}
@@ -256,6 +293,18 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
                   </button>
                 ))}
               </div>
+
+              {onAlertClick && (
+                <button
+                  onClick={onAlertClick}
+                  className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded-lg text-xs font-medium transition-all flex items-center gap-1"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                  </svg>
+                  Alerts
+                </button>
+              )}
             </div>
           </div>
 
@@ -269,7 +318,7 @@ export function AssetChart({ onAssetSelect }: AssetChartProps) {
           </div>
 
           <div className="flex items-center justify-between text-xs text-gray-500">
-            <span>Chart data from CoinGecko</span>
+            <span>Data: CoinGecko</span>
             <span>{selectedAsset}/USD</span>
           </div>
         </div>

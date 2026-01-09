@@ -15,7 +15,7 @@ import type { FormattedOrder } from "@/types";
 
 export default function ShieldPage() {
   const { isConnected } = useAccount();
-  const { orders, isLoading: ordersLoading } = useOrders();
+  const { orders, marketData, isLoading: ordersLoading } = useOrders();
   const { eth, btc, isLoading: pricesLoading } = usePrices();
 
   const [asset, setAsset] = useState<"ETH" | "BTC">("ETH");
@@ -24,7 +24,7 @@ export default function ShieldPage() {
   const [selectedOrder, setSelectedOrder] = useState<FormattedOrder | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const currentPrice = asset === "ETH" ? eth : btc;
+  const currentPrice = asset === "ETH" ? (marketData.eth || eth) : (marketData.btc || btc);
   const portfolioNum = parseFloat(portfolioValue) || 0;
   const targetStrike = currentPrice * (protectionLevel / 100);
 
@@ -89,7 +89,7 @@ export default function ShieldPage() {
                 }`}
                 onClick={() => setAsset("ETH")}
               >
-                ETH ({formatCurrency(eth)})
+                ETH ({formatCurrency(marketData.eth || eth)})
               </button>
               <button
                 className={`flex-1 py-3 rounded-lg font-medium transition-all ${
@@ -99,7 +99,7 @@ export default function ShieldPage() {
                 }`}
                 onClick={() => setAsset("BTC")}
               >
-                BTC ({formatCurrency(btc)})
+                BTC ({formatCurrency(marketData.btc || btc)})
               </button>
             </div>
           </CardContent>
