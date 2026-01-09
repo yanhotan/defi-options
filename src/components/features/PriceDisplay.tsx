@@ -1,11 +1,11 @@
 "use client";
 
-import { usePrices } from "@/hooks/usePrices";
+import { useOrders } from "@/hooks/useOrders";
 import { formatCurrency } from "@/lib/utils/format";
 import { Spinner } from "@/components/ui/Spinner";
 
 export function PriceDisplay() {
-  const { btc, eth, isLoading, error } = usePrices();
+  const { marketData, isLoading, error } = useOrders();
 
   if (isLoading) {
     return (
@@ -24,11 +24,11 @@ export function PriceDisplay() {
     <div className="flex items-center gap-6">
       <div className="flex items-center gap-2">
         <span className="text-gray-400">ETH</span>
-        <span className="font-mono font-semibold">{formatCurrency(eth)}</span>
+        <span className="font-mono font-semibold">{formatCurrency(marketData.eth)}</span>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-gray-400">BTC</span>
-        <span className="font-mono font-semibold">{formatCurrency(btc)}</span>
+        <span className="font-mono font-semibold">{formatCurrency(marketData.btc)}</span>
       </div>
     </div>
   );
