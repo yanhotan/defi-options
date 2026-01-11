@@ -73,15 +73,5 @@ src/
 
 This application runs on **Base Mainnet** (Chain ID: 8453). Ensure your wallet is connected to Base before interacting with the application.
 
-## Documentation
 
-See the `docs/` directory for detailed documentation:
-- `PROJECT-EXPLAINED.md` - Product overview
-- `ARCHITECTURE.md` - System architecture
-- `TECHNICAL-DEEP-DIVE.md` - Technical implementation details
-- `PRODUCT-DOCUMENT.md` - Product documentation
-
-## License
-
-Private project
 

@@ -30,7 +30,7 @@ export default function OrdersPage() {
         onAlertClick={() => setShowAlertModal(true)}
       />
 
-      <OptionsTable onSelectOrder={setSelectedOrder} filterAsset={selectedAsset} />
+      <OptionsTable onSelectOrder={setSelectedOrder} />
 
       {selectedOrder && (
         <OrderFillModal

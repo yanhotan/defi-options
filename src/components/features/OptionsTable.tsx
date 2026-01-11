@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useOrders } from "@/hooks/useOrders";
 import { formatCurrency, formatExpiry } from "@/lib/utils/format";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
@@ -9,15 +10,15 @@ import type { FormattedOrder } from "@/types";
 
 interface OptionsTableProps {
   onSelectOrder?: (order: FormattedOrder) => void;
-  filterAsset?: string;
 }
 
-export function OptionsTable({ onSelectOrder, filterAsset }: OptionsTableProps) {
+export function OptionsTable({ onSelectOrder }: OptionsTableProps) {
   const { orders, marketData, isLoading, error, refetch } = useOrders();
+  const [assetFilter, setAssetFilter] = useState<"ALL" | "ETH" | "BTC">("ALL");
 
-  const filteredOrders = filterAsset
-    ? orders.filter((o) => o.asset === filterAsset)
-    : orders;
+  const filteredOrders = assetFilter === "ALL"
+    ? orders
+    : orders.filter((o) => o.asset === assetFilter);
 
   if (isLoading) {
     return (
@@ -51,8 +52,8 @@ export function OptionsTable({ onSelectOrder, filterAsset }: OptionsTableProps) 
       <Card>
         <CardContent>
           <div className="text-center py-12 text-gray-400">
-            {filterAsset
-              ? `No ${filterAsset} orders available`
+            {assetFilter !== "ALL"
+              ? `No ${assetFilter} orders available`
               : "No orders available"}
           </div>
         </CardContent>
@@ -65,14 +66,31 @@ export function OptionsTable({ onSelectOrder, filterAsset }: OptionsTableProps) 
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="text-sm text-gray-400">
           ETH: {formatCurrency(marketData.eth)} | BTC:{" "}
           {formatCurrency(marketData.btc)}
         </div>
-        <Button onClick={refetch} variant="outline" size="sm">
-          Refresh
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 bg-gray-800 rounded-lg p-1">
+            {(["ALL", "ETH", "BTC"] as const).map((asset) => (
+              <button
+                key={asset}
+                onClick={() => setAssetFilter(asset)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  assetFilter === asset
+                    ? "bg-emerald-600 text-white"
+                    : "text-gray-400 hover:text-white hover:bg-gray-700"
+                }`}
+              >
+                {asset}
+              </button>
+            ))}
+          </div>
+          <Button onClick={refetch} variant="outline" size="sm">
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <Card>

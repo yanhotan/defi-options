@@ -22,10 +22,9 @@ export async function fetchPrices(): Promise<{ btc: number; eth: number }> {
 }
 
 export function formatOrder(order: ApiOrder, index: number): FormattedOrder {
-  const collateralLower = order.order.collateral.toLowerCase();
-  const isEth =
-    collateralLower === CONTRACTS.weth.toLowerCase() ||
-    collateralLower === CONTRACTS.usdc.toLowerCase();
+  // Determine asset by price feed address (more reliable than collateral)
+  const priceFeedLower = order.order.priceFeed.toLowerCase();
+  const isEth = priceFeedLower === CONTRACTS.ethPriceFeed.toLowerCase();
   const asset = isEth ? "ETH" : "BTC";
 
   const strikeRaw = BigInt(order.order.strikes[0] ?? "0");
@@ -35,7 +34,10 @@ export function formatOrder(order: ApiOrder, index: number): FormattedOrder {
   const price = Number(priceRaw) / 10 ** DECIMALS.strike;
 
   const maxCollateralRaw = BigInt(order.order.maxCollateralUsable);
-  const decimals = order.order.isCall ? DECIMALS.weth : DECIMALS.usdc;
+  // For calls: WETH (18) for ETH, WBTC (8) for BTC; For puts: always USDC (6)
+  const decimals = order.order.isCall
+    ? (isEth ? DECIMALS.weth : DECIMALS.wbtc)
+    : DECIMALS.usdc;
   const maxSize = Number(maxCollateralRaw) / 10 ** decimals;
 
   return {

@@ -24,10 +24,19 @@ export function OrderFillModal({ order, onClose, onSuccess }: OrderFillModalProp
 
   const collateralAddress = order.raw.order.collateral as `0x${string}`;
   const optionBookAddress = (order.raw.optionBookAddress ?? CONTRACTS.optionBook) as `0x${string}`;
-  const decimals = order.type === "call" ? DECIMALS.weth : DECIMALS.usdc;
+  const isEthAsset = order.asset === "ETH";
+  const decimals = order.type === "call" 
+    ? (isEthAsset ? DECIMALS.weth : DECIMALS.wbtc)
+    : DECIMALS.usdc;
   const sizeNum = parseFloat(size) || 0;
 
-  const premium = (order.price * sizeNum);
+  // For PUT: size is USDC collateral, convert to underlying notional for premium calc
+  // For CALL: size is underlying (ETH/BTC), use directly
+  // Premium = price_per_contract × number_of_contracts
+  const contracts = order.type === "put" 
+    ? sizeNum / order.strike  // USDC ÷ strike = underlying units
+    : sizeNum;                // Already in underlying units
+  const premium = order.price * contracts;
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: collateralAddress,
@@ -78,8 +87,10 @@ export function OrderFillModal({ order, onClose, onSuccess }: OrderFillModalProp
     }
   }, [isFillSuccess, onSuccess]);
 
+  // BUY (isLong=true): Pay premium to buy option
+  // SELL (isLong=false): Lock collateral (size) to sell option
   const requiredAmount = parseUnits(
-    order.isLong ? sizeNum.toString() : premium.toString(),
+    order.isLong ? premium.toString() : sizeNum.toString(),
     decimals
   );
 
@@ -201,12 +212,28 @@ export function OrderFillModal({ order, onClose, onSuccess }: OrderFillModalProp
                     <span className="text-gray-400">Premium</span>
                     <span className="font-mono">{formatCurrency(premium)}</span>
                   </div>
+                  {order.type === "put" && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Contracts ({order.asset})</span>
+                      <span className="font-mono">{contracts.toFixed(6)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
-                    <span className="text-gray-400">You {order.isLong ? "Pay" : "Receive"}</span>
+                    <span className="text-gray-400">
+                      {order.isLong ? "You Pay" : "You Receive"}
+                    </span>
                     <span className="font-mono font-semibold text-primary-400">
-                      {formatCurrency(order.isLong ? premium : sizeNum)}
+                      {formatCurrency(premium)}
                     </span>
                   </div>
+                  {!order.isLong && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Collateral Locked</span>
+                      <span className="font-mono">
+                        {sizeNum.toFixed(2)} {order.type === "call" ? order.asset : "USDC"}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 

@@ -257,9 +257,15 @@ export default function RFQPage() {
                 <span>{strike ? formatCurrency(parseFloat(strike)) : "-"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Size</span>
+                <span className="text-gray-400">Size (Collateral)</span>
                 <span>{size || "-"} {optionType === "call" ? asset : "USDC"}</span>
               </div>
+              {optionType === "put" && size && strike && (
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Contracts ({asset})</span>
+                  <span>{(parseFloat(size) / parseFloat(strike)).toFixed(6)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-400">Expiry</span>
                 <span>{expiryDays} day{expiryDays > 1 ? "s" : ""}</span>
