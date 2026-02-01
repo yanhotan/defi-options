@@ -135,7 +135,7 @@ export function PayoffChart({
           />
         </ComposedChart>
       </ResponsiveContainer>
-      <div className="flex justify-center gap-6 mt-2 text-xs">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-2 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-3 h-0.5 bg-green-500" />
           <span className="text-gray-400">Protected</span>
@@ -207,14 +207,14 @@ export function SimplePayoff({
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4 text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">
         <div>Scenario</div>
         <div className="text-right">Without Shield</div>
         <div className="text-right">With Shield</div>
       </div>
       {scenarios.map((s) => (
-        <div key={s.label} className="grid grid-cols-3 gap-4 text-sm">
+        <div key={s.label} className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
           <div className="text-gray-300">{s.label}</div>
           <div
             className={`text-right font-mono ${
@@ -234,8 +234,8 @@ export function SimplePayoff({
           </div>
         </div>
       ))}
-      <div className="mt-4 p-3 bg-primary-900/20 border border-primary-800 rounded-lg">
-        <p className="text-sm text-primary-300">
+      <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-primary-900/20 border border-primary-800 rounded-lg">
+        <p className="text-xs sm:text-sm text-primary-300">
           <strong>Max Loss with Shield:</strong> {formatCurrency(maxLoss)} (premium + gap to strike)
         </p>
         <p className="text-xs text-gray-400 mt-1">

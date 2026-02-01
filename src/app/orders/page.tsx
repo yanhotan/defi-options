@@ -17,10 +17,10 @@ export default function OrdersPage() {
   const currentPrice = selectedAsset === "ETH" ? eth : selectedAsset === "BTC" ? btc : eth;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Options Market</h1>
-        <p className="text-gray-400">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Options Market</h1>
+        <p className="text-gray-400 text-sm sm:text-base">
           Analyze price action and fill pre-signed orders from market makers.
         </p>
       </div>

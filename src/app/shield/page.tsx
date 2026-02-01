@@ -45,9 +45,9 @@ export default function ShieldPage() {
 
   if (!isConnected) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <h1 className="text-3xl font-bold mb-4">Portfolio Protection</h1>
-        <p className="text-gray-400 mb-8">
+      <div className="max-w-2xl mx-auto text-center py-8 sm:py-16 px-4">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4">Portfolio Protection</h1>
+        <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
           Connect your wallet to start protecting your portfolio.
         </p>
         <div className="flex justify-center">
@@ -66,23 +66,23 @@ export default function ShieldPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Shield Your Portfolio</h1>
-        <p className="text-gray-400">
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Shield Your Portfolio</h1>
+        <p className="text-gray-400 text-sm sm:text-base">
           Buy put options to protect against price drops.
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Select Asset</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Select Asset</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   asset === "ETH"
                     ? "bg-primary-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -92,7 +92,7 @@ export default function ShieldPage() {
                 ETH ({formatCurrency(marketData.eth || eth)})
               </button>
               <button
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   asset === "BTC"
                     ? "bg-primary-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -107,7 +107,7 @@ export default function ShieldPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Portfolio Value (USD)</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Portfolio Value (USD)</CardTitle>
           </CardHeader>
           <CardContent>
             <input
@@ -115,10 +115,10 @@ export default function ShieldPage() {
               value={portfolioValue}
               onChange={(e) => setPortfolioValue(e.target.value)}
               placeholder="10000"
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-lg focus:outline-none focus:border-primary-500"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-base sm:text-lg focus:outline-none focus:border-primary-500"
             />
             {portfolioNum > 0 && (
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-gray-400 text-xs sm:text-sm mt-2">
                 ≈ {(portfolioNum / currentPrice).toFixed(4)} {asset}
               </p>
             )}
@@ -127,7 +127,7 @@ export default function ShieldPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Protection Level</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Protection Level</CardTitle>
           </CardHeader>
           <CardContent>
             <input
@@ -139,13 +139,13 @@ export default function ShieldPage() {
               className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
             <div className="flex justify-between mt-2">
-              <span className="text-gray-400">70%</span>
-              <span className="text-xl font-bold text-primary-400">
+              <span className="text-gray-400 text-sm sm:text-base">70%</span>
+              <span className="text-lg sm:text-xl font-bold text-primary-400">
                 {protectionLevel}%
               </span>
-              <span className="text-gray-400">99%</span>
+              <span className="text-gray-400 text-sm sm:text-base">99%</span>
             </div>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-gray-400 text-xs sm:text-sm mt-2">
               Protection kicks in if {asset} drops below{" "}
               {formatCurrency(targetStrike)}
             </p>
@@ -154,19 +154,19 @@ export default function ShieldPage() {
 
         <Card className="border-primary-600/50">
           <CardHeader>
-            <CardTitle>Protection Summary</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Protection Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span className="text-gray-400">Portfolio Value</span>
                 <span>{formatCurrency(portfolioNum)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span className="text-gray-400">Current {asset} Price</span>
                 <span>{formatCurrency(currentPrice)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span className="text-gray-400">Protected Below</span>
                 <span className="text-primary-400">
                   {formatCurrency(targetStrike)}
@@ -174,11 +174,11 @@ export default function ShieldPage() {
               </div>
               {bestOption && (
                 <>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-gray-400">Best Available Strike</span>
                     <span>{formatCurrency(bestOption.strike)}</span>
                   </div>
-                  <div className="border-t border-gray-700 pt-3 flex justify-between text-lg">
+                  <div className="border-t border-gray-700 pt-2 sm:pt-3 flex justify-between text-base sm:text-lg">
                     <span className="font-medium">Estimated Premium</span>
                     <span className="font-bold text-primary-400">
                       {formatCurrency(estimatedPremium)}
@@ -187,7 +187,7 @@ export default function ShieldPage() {
                 </>
               )}
               {!bestOption && portfolioNum > 0 && (
-                <div className="text-yellow-400 text-sm">
+                <div className="text-yellow-400 text-xs sm:text-sm">
                   No matching put options available. Try adjusting your
                   protection level.
                 </div>
@@ -199,10 +199,10 @@ export default function ShieldPage() {
         {portfolioNum > 0 && bestOption && (
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Outcome Scenarios</CardTitle>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <CardTitle className="text-base sm:text-lg">Outcome Scenarios</CardTitle>
                 <button
-                  className="text-sm text-primary-400 hover:underline"
+                  className="text-xs sm:text-sm text-primary-400 hover:underline"
                   onClick={() => setShowAdvanced(!showAdvanced)}
                 >
                   {showAdvanced ? "Simple View" : "Advanced Chart"}

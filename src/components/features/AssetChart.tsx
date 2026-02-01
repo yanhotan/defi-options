@@ -191,8 +191,125 @@ export function AssetChart({ onAssetSelect, onAlertClick }: AssetChartProps) {
   return (
     <Card>
       <CardContent>
-        <div className="space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-3 sm:space-y-4">
+          {/* Mobile: Price and Asset selector at top */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            {currentPrice !== null && (
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className="text-xl font-bold">
+                    ${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
+                  {priceChange !== null && (
+                    <div
+                      className={`text-sm ${
+                        priceChange >= 0 ? "text-green-400" : "text-red-400"
+                      }`}
+                    >
+                      {priceChange >= 0 ? "+" : ""}
+                      {priceChange.toFixed(2)}%
+                    </div>
+                  )}
+                </div>
+                {onAlertClick && (
+                  <button
+                    onClick={onAlertClick}
+                    className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-500 rounded-lg text-xs font-medium transition-all flex items-center gap-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                    </svg>
+                    Alerts
+                  </button>
+                )}
+              </div>
+            )}
+            
+            {/* Mobile Asset Buttons */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+              {ASSETS.slice(0, 4).map((asset) => (
+                <button
+                  key={asset.symbol}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                    selectedAsset === asset.symbol
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                  }`}
+                  onClick={() => handleAssetSelect(asset.symbol)}
+                >
+                  {asset.symbol}
+                </button>
+              ))}
+              <div className="relative ml-auto">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-24 bg-gray-800 border border-gray-700 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-primary-500"
+                />
+                {searchQuery && (
+                  <div className="absolute top-full right-0 mt-1 w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                    {filteredAssets.map((asset) => (
+                      <button
+                        key={asset.symbol}
+                        className="w-full px-3 py-2 text-left hover:bg-gray-700 text-xs flex justify-between"
+                        onClick={() => handleAssetSelect(asset.symbol)}
+                      >
+                        <span className="font-medium">{asset.symbol}</span>
+                        <span className="text-gray-400">{asset.name}</span>
+                      </button>
+                    ))}
+                    {filteredAssets.length === 0 && (
+                      <div className="px-3 py-2 text-gray-400 text-xs">
+                        No assets found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile Timeframe and Chart Type */}
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+                <button
+                  className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                    chartType === "candle" ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => setChartType("candle")}
+                >
+                  Candle
+                </button>
+                <button
+                  className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                    chartType === "line" ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => setChartType("line")}
+                >
+                  Line
+                </button>
+              </div>
+              <div className="flex gap-0.5 bg-gray-800 rounded-lg p-1 overflow-x-auto flex-1">
+                {TIMEFRAMES.slice(0, 5).map((tf) => (
+                  <button
+                    key={tf.days}
+                    className={`px-1.5 py-1 rounded text-xs font-medium transition-all ${
+                      selectedTimeframe === tf.days
+                        ? "bg-gray-700 text-white"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                    onClick={() => setSelectedTimeframe(tf.days)}
+                  >
+                    {tf.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <input
@@ -317,7 +434,7 @@ export function AssetChart({ onAssetSelect, onAlertClick }: AssetChartProps) {
             <div ref={chartContainerRef} className="w-full" />
           </div>
 
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center justify-between text-xs text-gray-500 px-1">
             <span>Data: CoinGecko</span>
             <span>{selectedAsset}/USD</span>
           </div>

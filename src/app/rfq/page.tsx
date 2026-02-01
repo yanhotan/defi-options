@@ -38,9 +38,9 @@ export default function RFQPage() {
 
   if (!isConnected) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <h1 className="text-3xl font-bold mb-4">Request for Quote</h1>
-        <p className="text-gray-400 mb-8">
+      <div className="max-w-2xl mx-auto text-center py-8 sm:py-16 px-4">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4">Request for Quote</h1>
+        <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
           Connect your wallet to submit custom option requests.
         </p>
         <div className="flex justify-center">
@@ -59,27 +59,27 @@ export default function RFQPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Request for Quote (RFQ)</h1>
-        <p className="text-gray-400">
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Request for Quote (RFQ)</h1>
+        <p className="text-gray-400 text-sm sm:text-base">
           Submit custom option requests to market makers.
         </p>
-        <p className="text-gray-500 text-sm mt-2">
+        <p className="text-gray-500 text-xs sm:text-sm mt-2">
           Total RFQs submitted: {quotationCount}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Option Type</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Option Type</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   optionType === "call"
                     ? "bg-green-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -90,7 +90,7 @@ export default function RFQPage() {
               </button>
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   optionType === "put"
                     ? "bg-red-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -105,13 +105,13 @@ export default function RFQPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Underlying Asset</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Underlying Asset</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   asset === "ETH"
                     ? "bg-primary-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -122,7 +122,7 @@ export default function RFQPage() {
               </button>
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   asset === "BTC"
                     ? "bg-primary-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -137,13 +137,13 @@ export default function RFQPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Direction</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Direction</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   direction === "buy"
                     ? "bg-green-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -154,7 +154,7 @@ export default function RFQPage() {
               </button>
               <button
                 type="button"
-                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   direction === "sell"
                     ? "bg-red-600 text-white"
                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
@@ -169,7 +169,7 @@ export default function RFQPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Strike Price (USD)</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Strike Price (USD)</CardTitle>
           </CardHeader>
           <CardContent>
             <input
@@ -177,15 +177,15 @@ export default function RFQPage() {
               value={strike}
               onChange={(e) => setStrike(e.target.value)}
               placeholder={currentPrice.toString()}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary-500"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-primary-500"
               required
             />
-            <div className="flex gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-2">
               {[0.9, 0.95, 1.0, 1.05, 1.1].map((multiplier) => (
                 <button
                   key={multiplier}
                   type="button"
-                  className="px-3 py-1 bg-gray-800 rounded text-xs text-gray-400 hover:bg-gray-700"
+                  className="px-2 sm:px-3 py-1 bg-gray-800 rounded text-xs text-gray-400 hover:bg-gray-700"
                   onClick={() => setStrike(Math.round(currentPrice * multiplier).toString())}
                 >
                   {multiplier === 1 ? "ATM" : `${(multiplier * 100 - 100).toFixed(0)}%`}
@@ -197,7 +197,7 @@ export default function RFQPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Size ({optionType === "call" ? asset : "USDC"})</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Size ({optionType === "call" ? asset : "USDC"})</CardTitle>
           </CardHeader>
           <CardContent>
             <input
@@ -206,7 +206,7 @@ export default function RFQPage() {
               onChange={(e) => setSize(e.target.value)}
               placeholder="1.0"
               step="0.01"
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary-500"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-primary-500"
               required
             />
           </CardContent>
@@ -214,13 +214,13 @@ export default function RFQPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Expiry</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Expiry</CardTitle>
           </CardHeader>
           <CardContent>
             <select
               value={expiryDays}
               onChange={(e) => setExpiryDays(parseInt(e.target.value))}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary-500"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-primary-500"
             >
               <option value={1}>1 Day</option>
               <option value={7}>1 Week</option>
@@ -232,10 +232,10 @@ export default function RFQPage() {
 
         <Card className="border-primary-600/50">
           <CardHeader>
-            <CardTitle>RFQ Summary</CardTitle>
+            <CardTitle className="text-base sm:text-lg">RFQ Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-xs sm:text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-400">Type</span>
                 <span className={optionType === "call" ? "text-green-400" : "text-red-400"}>
@@ -275,21 +275,21 @@ export default function RFQPage() {
         </Card>
 
         {isSuccess && (
-          <div className="bg-green-900/20 border border-green-800 rounded-lg p-4">
-            <p className="text-green-400 font-medium">RFQ Submitted Successfully!</p>
-            <p className="text-gray-400 text-sm mt-1">
+          <div className="bg-green-900/20 border border-green-800 rounded-lg p-3 sm:p-4">
+            <p className="text-green-400 font-medium text-sm sm:text-base">RFQ Submitted Successfully!</p>
+            <p className="text-gray-400 text-xs sm:text-sm mt-1 break-all">
               Transaction: {hash?.slice(0, 20)}...
             </p>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-xs sm:text-sm">
               Market makers will submit quotes within 5 minutes.
             </p>
           </div>
         )}
 
         {error && (
-          <div className="bg-red-900/20 border border-red-800 rounded-lg p-4">
-            <p className="text-red-400 font-medium">Error</p>
-            <p className="text-gray-400 text-sm">{error.message.slice(0, 100)}</p>
+          <div className="bg-red-900/20 border border-red-800 rounded-lg p-3 sm:p-4">
+            <p className="text-red-400 font-medium text-sm sm:text-base">Error</p>
+            <p className="text-gray-400 text-xs sm:text-sm break-all">{error.message.slice(0, 100)}</p>
           </div>
         )}
 

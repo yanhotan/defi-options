@@ -58,9 +58,9 @@ export default function PositionsPage() {
 
   if (!isConnected) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <h1 className="text-3xl font-bold mb-4">Your Positions</h1>
-        <p className="text-gray-400 mb-8">
+      <div className="max-w-2xl mx-auto text-center py-8 sm:py-16 px-4">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4">Your Positions</h1>
+        <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
           Connect your wallet to view your positions.
         </p>
         <div className="flex justify-center">
@@ -71,32 +71,32 @@ export default function PositionsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Your Positions</h1>
-        <p className="text-gray-400">
+    <div className="max-w-6xl mx-auto px-4 sm:px-0">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Your Positions</h1>
+        <p className="text-gray-400 text-sm sm:text-base">
           Active protections and past trades for{" "}
           {address?.slice(0, 6)}...{address?.slice(-4)}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <Card>
-          <CardContent className="pt-4">
-            <p className="text-gray-400 text-sm">Total Positions</p>
-            <p className="text-2xl font-bold">{MOCK_POSITIONS.length}</p>
+          <CardContent className="pt-3 sm:pt-4">
+            <p className="text-gray-400 text-xs sm:text-sm">Total Positions</p>
+            <p className="text-xl sm:text-2xl font-bold">{MOCK_POSITIONS.length}</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-4">
-            <p className="text-gray-400 text-sm">Portfolio Value</p>
-            <p className="text-2xl font-bold">${totalValue.toLocaleString()}</p>
+          <CardContent className="pt-3 sm:pt-4">
+            <p className="text-gray-400 text-xs sm:text-sm">Portfolio Value</p>
+            <p className="text-xl sm:text-2xl font-bold">${totalValue.toLocaleString()}</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <p className="text-gray-400 text-sm">Total P&L</p>
-            <p className={`text-2xl font-bold ${totalPnl >= 0 ? "text-green-400" : "text-red-400"}`}>
+        <Card className="sm:col-span-2 md:col-span-1">
+          <CardContent className="pt-3 sm:pt-4">
+            <p className="text-gray-400 text-xs sm:text-sm">Total P&L</p>
+            <p className={`text-xl sm:text-2xl font-bold ${totalPnl >= 0 ? "text-green-400" : "text-red-400"}`}>
               {totalPnl >= 0 ? "+" : ""}${totalPnl.toLocaleString()}
             </p>
           </CardContent>
@@ -105,10 +105,11 @@ export default function PositionsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Active Positions</CardTitle>
+          <CardTitle className="text-base sm:text-lg">Active Positions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-400 text-sm border-b border-gray-800">
@@ -171,6 +172,67 @@ export default function PositionsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {MOCK_POSITIONS.map((position) => (
+              <div key={position.id} className="bg-gray-800/30 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">{position.asset}</span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      position.type === "call" 
+                        ? "bg-green-900/50 text-green-400" 
+                        : "bg-red-900/50 text-red-400"
+                    }`}>
+                      {position.type.toUpperCase()}
+                    </span>
+                    <span className="text-gray-500 text-xs">{position.direction}</span>
+                  </div>
+                  <span className={`px-2 py-1 rounded text-xs ${
+                    position.status === "active"
+                      ? "bg-blue-900/50 text-blue-400"
+                      : position.status === "exercised"
+                      ? "bg-green-900/50 text-green-400"
+                      : "bg-gray-800 text-gray-400"
+                  }`}>
+                    {position.status}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="text-gray-400 text-xs">Strike</span>
+                    <p className="font-medium">${position.strike.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs">Expiry</span>
+                    <p className="text-gray-300">{position.expiry}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs">Size</span>
+                    <p className="font-medium">{position.size} {position.asset}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs">Entry / Current</span>
+                    <p className="font-medium">${position.entryPrice} / ${position.currentPrice}</p>
+                  </div>
+                </div>
+                
+                <div className={`flex justify-between items-center pt-2 border-t border-gray-700 ${position.pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
+                  <span className="text-xs text-gray-400">P&L</span>
+                  <div className="text-right">
+                    <span className="font-bold">
+                      {position.pnl >= 0 ? "+" : ""}${position.pnl.toLocaleString()}
+                    </span>
+                    <span className="text-xs ml-1">
+                      ({position.pnlPercent >= 0 ? "+" : ""}{position.pnlPercent.toFixed(2)}%)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
